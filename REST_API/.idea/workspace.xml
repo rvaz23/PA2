@@ -5,35 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a85e935c-253f-49e1-96cf-e9128fa59ef5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f31c9a74-766c-409e-8068-d5ee5f3da1ee.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/f31c9a74-766c-409e-8068-d5ee5f3da1ee.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/2021-04-19T132256.400.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/2021-04-19T132310.200.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/2021-04-19T132326.200.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/2021-04-19T132329.200.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/csd/Account/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/csd/Account/AccountController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/csd/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/csd/AppConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/csd/CsdApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/csd/CsdApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/csd/CoinBase/CoinBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/csd/CoinBase/CoinBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/csd/CoinBase/CoinBaseRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/csd/CoinBase/CoinBaseRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/csd/Transfer/TokenTransfer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/csd/Transfer/TokenTransfer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/csd/Transfer/TransferController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/csd/Transfer/TransferController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/csd/Transfer/TransferRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/csd/Transfer/TransferRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bftsmart/demo/csdcoin/CsdClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bftsmart/demo/csdcoin/CsdClient.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bftsmart/demo/csdcoin/CsdServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bftsmart/demo/csdcoin/CsdServer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bftsmart/demo/csdcoin/Message$Type.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bftsmart/demo/csdcoin/Message$Type.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bftsmart/demo/csdcoin/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bftsmart/demo/csdcoin/Message.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/csd/Account/AccountController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/csd/Account/AccountController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/csd/AppConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/csd/AppConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/csd/CsdApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/csd/CsdApplication.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/example/csd/Transfer/TokenTransfer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/csd/Transfer/TokenTransfer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/csd/Transfer/TransferController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/csd/Transfer/TransferController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/example/csd/Transfer/TransferRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/csd/Transfer/TransferRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TerminalClient/Client$entry.class" beforeDir="false" afterPath="$PROJECT_DIR$/../TerminalClient/Client$entry.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../TerminalClient/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/../TerminalClient/Client.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../TerminalClient/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/../TerminalClient/Client.java" afterDir="false" />
     </list>
@@ -95,6 +75,17 @@
     </key>
   </component>
   <component name="RunManager" selected="Spring Boot.CsdApplication">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="generated-requests#1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" runType="Run single request">
       <method v="2" />
     </configuration>
@@ -204,6 +195,7 @@
       <workItem from="1623961017778" duration="7970000" />
       <workItem from="1623969378468" duration="1073000" />
       <workItem from="1623971042839" duration="9436000" />
+      <workItem from="1624001323747" duration="12978000" />
     </task>
     <servers />
   </component>
@@ -221,16 +213,5 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/bftsmart/demo/csdcoin/CsdServer.java</url>
-          <line>229</line>
-          <option name="timeStamp" value="25" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

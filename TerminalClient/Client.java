@@ -458,6 +458,12 @@ public class Client {
     private static void lastBlock(byte[] block){
     	if(block==null || block.length ==0){
     	System.out.println("Genesis");
+    	lastBlockId=0;
+    	byte[] hash = new byte[32];
+    	for(int i=0;i<32;i++){
+    	hash[i]=0;
+    	}
+    	lastBlockHash=hash;
     	} else{
     	byte id[] = new byte[4];
     	System.arraycopy(block,0,id,0,4);
@@ -491,6 +497,40 @@ public class Client {
 		System.out.println(id+name+amount);
 	    	bytesConsumed+=(12+nCarachters);
 	}
+	System.arraycopy(pending,bytesConsumed,nCoinbase,0,4);
+	int nTransactions = byteArrayToint(nCoinbase);
+	bytesConsumed+=4;
+	for(int i=0;i<nTransactions;i++){
+		byte[] aux = new byte[4];
+		System.arraycopy(pending,bytesConsumed,aux,0,4);
+		int id = byteArrayToint(aux);
+		
+		System.arraycopy(pending,bytesConsumed+4,aux,0,4);
+		int nCarachtersFrom= byteArrayToint(aux);
+		byte[] usernameFrom= new byte[nCarachtersFrom];
+		System.arraycopy(pending,bytesConsumed+8,usernameFrom,0,nCarachtersFrom);
+		String nameFrom = new String(usernameFrom,StandardCharsets.ISO_8859_1);
+		
+		System.arraycopy(pending,bytesConsumed+8+nCarachtersFrom,aux,0,4);
+		int nCarachtersTo= byteArrayToint(aux);
+		byte[] usernameTo= new byte[nCarachtersTo];
+		System.arraycopy(pending,bytesConsumed+12+nCarachtersFrom,usernameTo,0,nCarachtersTo);
+		String nameTo = new String(usernameTo,StandardCharsets.ISO_8859_1);
+		
+		byte isEncrypted = pending[bytesConsumed+12+nCarachtersFrom+nCarachtersTo];
+		
+		
+		System.arraycopy(pending,bytesConsumed+13+nCarachtersFrom+nCarachtersTo,aux,0,4);
+		int amount = byteArrayToint(aux);
+		
+		byte[] signature = new byte[128];
+		System.arraycopy(pending,17+nCarachtersFrom+nCarachtersTo,signature,0,128);
+		
+		System.out.println(id+nameFrom+nameTo+amount);
+	    	bytesConsumed+=(17+nCarachtersFrom+nCarachtersTo+128);
+	}
+	
+	
 	
     	transactions=pending;
     	System.out.println(transactions);

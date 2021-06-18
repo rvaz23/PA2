@@ -64,10 +64,18 @@ public class CsdServer extends DefaultSingleRecoverable {
 		transferRepository=tr_repo;
 		coinRepository=coin_repo;
 		this.chainRepository=chainRepository;
-		String pub = "30 81 89 02 81 81 00 AE 7D 7D 83 1A 24 AC AD F0 F5 00 14 FE 6F 12 01 64 70 14 83 BC 1E 17 24 A8 91 87 29 75 DB CB 9E C1 1A 3A 75 ED 0D 3B F7 BF ED 08 D7 7E 53 83 A7 C1 C2 9E 0F E5 83 FA 8E 5A DD 43 A8 A0 27 BE 44 FD D6 EA 9E 26 BF D9 E6 79 DF B6 1E 05 EE B4 0E 81 D1 F0 5C 80 E1 69 48 43 F1 34 04 45 1B EE 94 4D D9 97 F4 57 29 49 F7 AB D4 3D 18 0D AB 0D 6B 30 65 86 01 A2 89 6E C2 F7 5D 8E E4 F3 C7 71 6D 02 03 01 00 01";
-		for(int i=0;i<20;i++) {
-			CoinBase initialAmount = new CoinBase(i, "Ruben", 10000);
-			coinRepository.save(initialAmount);
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			String pub = "30 81 89 02 81 81 00 AE 7D 7D 83 1A 24 AC AD F0 F5 00 14 FE 6F 12 01 64 70 14 83 BC 1E 17 24 A8 91 87 29 75 DB CB 9E C1 1A 3A 75 ED 0D 3B F7 BF ED 08 D7 7E 53 83 A7 C1 C2 9E 0F E5 83 FA 8E 5A DD 43 A8 A0 27 BE 44 FD D6 EA 9E 26 BF D9 E6 79 DF B6 1E 05 EE B4 0E 81 D1 F0 5C 80 E1 69 48 43 F1 34 04 45 1B EE 94 4D D9 97 F4 57 29 49 F7 AB D4 3D 18 0D AB 0D 6B 30 65 86 01 A2 89 6E C2 F7 5D 8E E4 F3 C7 71 6D 02 03 01 00 01";
+			for (int i = 0; i < 20; i++) {
+				CoinBase initialAmount = new CoinBase(i, "Ruben", 10000);
+				byte[] cbRaw = initialAmount.CoinBaseBlock();
+				byte[] operationHash = md.digest(cbRaw);
+				initialAmount.setOperationHash(operationHash);
+				coinRepository.save(initialAmount);
+			}
+		}catch (Exception e) {
+
 		}
 		logger = Logger.getLogger(CsdServer.class.getName());
 		new ServiceReplica(id, this, this);
@@ -77,7 +85,7 @@ public class CsdServer extends DefaultSingleRecoverable {
 	public byte[] sendPending(int nTransactions) throws IOException {
 		List<CoinBase> ltest = (List<CoinBase>)coinRepository.findAll();
 		System.out.println(ltest.size());
-		byte[] transactions= BlockFunctions.buildPendingTransactions(nTransactions,(List<TokenTransfer>) transferRepository.findAll(),(List<CoinBase>) coinRepository.findAll());
+		byte[] transactions= BlockFunctions.buildPendingTransactions(nTransactions,(List<TokenTransfer>) transferRepository.findNotConfirmed(),(List<CoinBase>) coinRepository.getPending());
 		System.out.println(transactions.length);
 		return transactions;
 	}
@@ -210,13 +218,16 @@ public class CsdServer extends DefaultSingleRecoverable {
 
     private boolean confirmCoinBase(List<CoinBase> lBc,int blockId){
 	    List<CoinBase> listToUpdate = new ArrayList<CoinBase>();
+	    if(lBc.size()<=0){
+	    	return false;
+		}
         for(CoinBase cb :lBc ){
             Optional<CoinBase> optional =coinRepository.findById(cb.getId());
             if(optional.get()==null){
                 return false;
             }
             CoinBase dCb = optional.get();
-            if(cb.getId()==dCb.getId() && cb.getAmount()==dCb.getAmount() && cb.getUsername().equals(dCb.getUsername()) ){
+            if(cb.getId()==dCb.getId() && cb.getAmount()==dCb.getAmount() && cb.getUsername().equals(dCb.getUsername()) && dCb.getBlockId()==-1){
                 dCb.setBlockId(blockId);
                 listToUpdate.add(dCb);
             }else{
@@ -274,7 +285,9 @@ public class CsdServer extends DefaultSingleRecoverable {
 						System.arraycopy(MinedBlock,0,bId,0,4);
 						Block blck = new Block(utils.byteArrayToint(bId),MinedBlock);
 						chainRepository.save(blck);
+						byte[] hash =md.digest(blck.getBlock());
 						results.add("CONGRATS YOU DID IT".getBytes(StandardCharsets.UTF_8));
+						results.add(hash);
 					}else{
 						results.add("Block is wrong".getBytes(StandardCharsets.UTF_8));
 					}
@@ -354,10 +367,16 @@ public class CsdServer extends DefaultSingleRecoverable {
 							acc.deposit(amount);
 							repositorydb.save(acc);
 							if (coinRepository.findLast() != null) {
-								CoinBase cb = new CoinBase(coinRepository.findLast()+1,username1,amount);
+								CoinBase cb = new CoinBase(coinRepository.findLast()+1,username1,amount*5);
+								byte[] cbRaw = cb.CoinBaseBlock();
+								byte[] operationHash = md.digest(cbRaw);
+								cb.setOperationHash(operationHash);
 								coinRepository.save(cb);
 							}else{
 								CoinBase cb = new CoinBase(0,username1,amount);
+								byte[] cbRaw = cb.CoinBaseBlock();
+								byte[] operationHash = md.digest(cbRaw);
+								cb.setOperationHash(operationHash);
 								coinRepository.save(cb);
 							}
 
@@ -365,7 +384,8 @@ public class CsdServer extends DefaultSingleRecoverable {
 							//transferRepository.save(transfer);
 							//results.add(transfer.getId().toString().getBytes(StandardCharsets.UTF_8));
 							//results.add(messageHash1);
-							results.add("User Deposit has been made".getBytes(StandardCharsets.UTF_8));
+							String s = "User Deposit of "+amount+"$ has been made and received"+amount*5 +"CSDCoins";
+							results.add(s.getBytes(StandardCharsets.UTF_8));
 							results.add(("Current balance: " + acc.getAmount().toString()).getBytes(StandardCharsets.UTF_8));
 						} else {
 							results.add("Failed to deposit".getBytes(StandardCharsets.UTF_8));
@@ -380,7 +400,7 @@ public class CsdServer extends DefaultSingleRecoverable {
 				case "TRANSFER":
 					String from = new String(message.getValues().get("FROM"), StandardCharsets.UTF_8);
 					String to = new String(message.getValues().get("TO"), StandardCharsets.UTF_8);
-					int amount1 = Integer.parseInt(new String(message.getValues().get("AMOUNT"), StandardCharsets.UTF_8));
+					int amount1 = (int)Float.parseFloat(new String(message.getValues().get("AMOUNT"), StandardCharsets.UTF_8));
 					byte[] signature1 = message.getValues().get("SIGNATURE");
 
 					Account fromAc = repositorydb.findDistinctByUsername(from);
@@ -393,7 +413,12 @@ public class CsdServer extends DefaultSingleRecoverable {
 						repositorydb.save(fromAc);
 						toAc.receiveTransfer(amount1);
 						repositorydb.save(toAc);
-						TokenTransfer transfer = new TokenTransfer(0,false, utils.intToByteArray(amount1),fromAc,toAc,new java.sql.Timestamp(System.currentTimeMillis()),signature1,hashed_transfer);
+						TokenTransfer transfer;
+						if(transferRepository.findLast()!=null){
+							transfer = new TokenTransfer(transferRepository.findLast()+1,false, utils.intToByteArray(amount1),fromAc,toAc,new java.sql.Timestamp(System.currentTimeMillis()),signature1,hashed_transfer);
+						}else{
+							transfer = new TokenTransfer(0,false, utils.intToByteArray(amount1),fromAc,toAc,new java.sql.Timestamp(System.currentTimeMillis()),signature1,hashed_transfer);
+						}
 						transferRepository.save(transfer);
 						results.add(transfer.getId().toString().getBytes(StandardCharsets.UTF_8));
 						results.add(hashed_transfer);
@@ -408,10 +433,12 @@ public class CsdServer extends DefaultSingleRecoverable {
 					break;
 				case "BALANCE":
 					String username3 = new String(message.getValues().get("USERNAME"), StandardCharsets.UTF_8);
+					int b =getBalancefromChain(username3);
 					Account acc1 = repositorydb.findDistinctByUsername(username3);
 					results = new ArrayList<byte[]>();
 					if (repositorydb.findDistinctByUsername(username3)!=null){
-						results.add((acc1.getUsername()+" has "+Float.toString(acc1.getAmount())).getBytes(StandardCharsets.UTF_8));
+						acc1.setAmount((float)b);
+						results.add((acc1.getUsername()+" has "+Float.toString(b)).getBytes(StandardCharsets.UTF_8));
 					}else{
 						results.add("Failed to connect to account".getBytes(StandardCharsets.UTF_8));
 					}
@@ -503,6 +530,16 @@ public class CsdServer extends DefaultSingleRecoverable {
 		return reply;
 	}
 
+	private int getBalancefromChain(String username){
+		int balance=0;
+		List<CoinBase> cbUtxo = coinRepository.getUTXOCoin(username);
+		for(CoinBase cb : cbUtxo){
+			balance+=cb.getAmount();
+		}
+
+		return balance;
+	}
+
 	private byte[] verifyTransfer(Account acc,Account toAc,float amount,byte[] signature) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 		if (acc!=null && toAc!=null){
 			PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(acc.getPublickey()));
@@ -591,11 +628,14 @@ public class CsdServer extends DefaultSingleRecoverable {
 					break;
 				case "BALANCE":
 					String username3 = new String(message.getValues().get("USERNAME"), StandardCharsets.UTF_8);
+					int b =getBalancefromChain(username3);
 					Account acc1 = repositorydb.findDistinctByUsername(username3);
+					results = new ArrayList<byte[]>();
 					if (repositorydb.findDistinctByUsername(username3)!=null){
-						results.add((acc1.getUsername()+" has "+Float.toString(acc1.getAmount())).getBytes(StandardCharsets.UTF_8));
+						acc1.setAmount((float)b);
+						results.add((acc1.getUsername()+" has "+Float.toString(b)).getBytes(StandardCharsets.UTF_8));
 					}else{
-						results.add(("Failed to connect to account").getBytes(StandardCharsets.UTF_8));
+						results.add("Failed to connect to account".getBytes(StandardCharsets.UTF_8));
 					}
 
 					response = Message.results(results);

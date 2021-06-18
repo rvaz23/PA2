@@ -79,6 +79,7 @@
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/statemanagement/durability/CSTSMMessage.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/reconfiguration/View.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/tom/leaderchange/LCMessage.java
+/home/ruben/Downloads/OA3/REST_API/src/main/java/com/example/csd/UTXO.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/com/example/csd/Account/AccountRepository.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/tom/ServiceProxy.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/communication/client/CommunicationSystemClientSideFactory.java

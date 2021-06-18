@@ -23,7 +23,10 @@ public interface TransferRepository extends CrudRepository<TokenTransfer,Integer
     @Query("select  u from TokenTransfer u where (u.from.username=:username or u.to.username=:username) and u.time>=:start and u.time<=:end")
     public Iterable<TokenTransfer> findAllByUserandTimestamp(@Param("username")String username ,@Param("start")Timestamp stime, @Param("end") Timestamp etime);
 
-    @Query("select  u from TokenTransfer u where u.blockId=-1")//inner join Account where Account.username = :username")
+    @Query("select  u from TokenTransfer u where u.blockId=-1 order by u.time ASC ")//inner join Account where Account.username = :username")
     public Iterable<TokenTransfer> findNotConfirmed();
+
+    @Query("select max(id) from TokenTransfer")
+    public Integer findLast();
 
 }

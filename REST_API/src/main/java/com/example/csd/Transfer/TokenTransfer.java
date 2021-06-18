@@ -2,6 +2,7 @@ package com.example.csd.Transfer;
 
 import auxiliary.utils;
 import com.example.csd.Account.Account;
+import com.example.csd.UTXO;
 
 import javax.persistence.*;
 import java.io.ByteArrayOutputStream;
@@ -11,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 
 @Entity
-public class TokenTransfer implements Serializable{
+public class TokenTransfer  implements Serializable {
 
 
 
@@ -83,9 +84,6 @@ public class TokenTransfer implements Serializable{
         this.time = time;
     }
 
-    public void setAmount(int amount) {
-        this.amount = utils.intToByteArray(amount);
-    }
 
     public void setFrom(Account from) {
         this.from = from;
@@ -103,6 +101,10 @@ public class TokenTransfer implements Serializable{
         this.amount = amount;
     }
 
+    public byte[] getAmount() {
+        return amount;
+    }
+
     @Id
     public Integer getId() {
         return id;
@@ -112,9 +114,7 @@ public class TokenTransfer implements Serializable{
         return time;
     }
 
-    public int getAmount() {
-        return utils.byteArrayToint(amount) ;
-    }
+
 
     @ManyToOne
     @JoinColumn(name = "fromId")

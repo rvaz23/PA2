@@ -16,6 +16,7 @@ public class CoinBase implements Serializable {
     private int amount;
     private String username;
     private int blockId;
+    private byte[] operationHash;
 
 public CoinBase(){
 
@@ -58,6 +59,14 @@ public CoinBase(){
 
     public void setBlockId(int blockId) {
         this.blockId = blockId;
+    }
+
+    public byte[] getOperationHash() {
+        return operationHash;
+    }
+
+    public void setOperationHash(byte[] operationHash) {
+        this.operationHash = operationHash;
     }
 
     public byte[] CoinBaseBlock() throws IOException {
