@@ -14,6 +14,7 @@ Utilizei base de dados relacional mysql:
     
    
    Terminal Interativo na diretoria Terminal (o cliente conecta-se ao porto 8443)
-   -java Client
+   -java Client (localhost:8443)
+   
    Utilizadores de teste ja com chaves privadas com username e password igual,(teste1,teste2), pode também ser criado novo se o user for diferente de alguma keystore ja presente na diretoria  
    
