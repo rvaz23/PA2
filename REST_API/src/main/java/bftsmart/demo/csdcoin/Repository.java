@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import com.example.csd.Account.Account;
+import com.example.csd.BlockChain.Block;
+import com.example.csd.CoinBase.CoinBase;
 import com.example.csd.Transfer.TokenTransfer;
 
 public class Repository implements Serializable {
@@ -12,11 +14,15 @@ public class Repository implements Serializable {
 
     private List<Account> accounts;
     private List<TokenTransfer> transfers;
+    private List<Block> chain;
+    private List<CoinBase> coinBases;
 
 
-    public Repository(List<Account> accounts,List<TokenTransfer> transfers){
+    public Repository(List<Account> accounts,List<TokenTransfer> transfers,List<Block> chain,List<CoinBase> coinBases){
         this.accounts = accounts;
         this.transfers = transfers;
+        this.chain=chain;
+        this.coinBases=coinBases;
     }
 
     public List<Account> getAccounts() {
@@ -33,5 +39,21 @@ public class Repository implements Serializable {
 
     public void setTransfers(List<TokenTransfer> transfers) {
         this.transfers = transfers;
+    }
+
+    public List<Block> getChain() {
+        return chain;
+    }
+
+    public void setChain(List<Block> chain) {
+        this.chain = chain;
+    }
+
+    public List<CoinBase> getCoinBases() {
+        return coinBases;
+    }
+
+    public void setCoinBases(List<CoinBase> coinBases) {
+        this.coinBases = coinBases;
     }
 }

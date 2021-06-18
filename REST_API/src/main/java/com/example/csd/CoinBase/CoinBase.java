@@ -72,7 +72,7 @@ public CoinBase(){
     public byte[] CoinBaseBlock() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         byte[] id = utils.intToByteArray(this.id);
-        byte[] toUs =username.getBytes(StandardCharsets.ISO_8859_1);
+        byte[] toUs =username.getBytes(StandardCharsets.UTF_8);
         byte[] toLength= utils.intToByteArray(toUs.length);
         byte[] am = utils.intToByteArray(this.amount);
         os.write(id);

@@ -108,7 +108,7 @@ public class TransferController {
     public @ResponseBody
     String transfer(@RequestParam String username,@RequestBody byte[] block) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
 
-        byte[] message = client.mineBlock(block);
+        byte[] message = client.mineBlock(block,username);
 
     return new String(message,StandardCharsets.UTF_8);
     }

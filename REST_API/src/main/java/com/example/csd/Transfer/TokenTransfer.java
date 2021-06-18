@@ -57,6 +57,17 @@ public class TokenTransfer  implements Serializable {
         this.blockId=-1;
     }
 
+    public TokenTransfer(int id,boolean isEncrypted,byte[] amount,Account from,Account to,byte[] signature){
+        super();
+        this.id=id;
+        this.amount=amount;
+        this.isEncrypted=isEncrypted;
+        this.from=from;
+        this.to=to;
+        this.signature=signature;
+        this.blockId=-1;
+    }
+
 
 
 
@@ -135,20 +146,23 @@ public class TokenTransfer  implements Serializable {
     public byte[] TransferBlock() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         byte[] id = utils.intToByteArray(this.id);
-        byte[] fromUs =from.getUsername().getBytes(StandardCharsets.ISO_8859_1);
+        byte[] fromUs =from.getUsername().getBytes(StandardCharsets.UTF_8);
         byte[] fromLength= utils.intToByteArray(fromUs.length);
-        byte[] toUs =to.getUsername().getBytes(StandardCharsets.ISO_8859_1);
+        byte[] toUs =to.getUsername().getBytes(StandardCharsets.UTF_8);
         byte[] toLength= utils.intToByteArray(toUs.length);
         byte isEncrypted=this.isEncrypted ? (byte) 1:0;
         byte[] time = utils.floatToByteArray(getTime().getTime());
+        byte[] sign = signature;
+        byte[] am =amount;
         os.write(id);
+        os.write(sign);
         os.write(fromLength);
         os.write(fromUs);
         os.write(toLength);
         os.write(toUs);
         os.write(isEncrypted);
-        os.write(amount);
-        os.write(signature);
-        return os.toByteArray();
+        os.write(am);
+        byte[] send = os.toByteArray();
+        return send;
     }
 }

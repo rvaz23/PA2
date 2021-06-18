@@ -69,6 +69,7 @@
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/tom/server/defaultservices/DefaultReplier.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/communication/client/netty/NettyClientServerCommunicationSystemClientSide.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/reconfiguration/VMMessage.java
+/home/ruben/Downloads/OA3/REST_API/src/main/java/com/example/csd/Transfer/TokenTransferSimple.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/communication/client/ReplyListener.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/tom/util/Storage.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/statemanagement/durability/CSTRequestF1.java
@@ -92,7 +93,6 @@
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/communication/client/netty/NettyTOMMessageDecoder.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/tom/util/DebugInfo.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/communication/server/ServersCommunicationLayer.java
-/home/ruben/Downloads/OA3/REST_API/src/main/java/com/example/csd/Transfer/TokenTransferDTO.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/consensus/messages/MessageFactory.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/reconfiguration/VMServices.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/reconfiguration/views/View.java
@@ -107,6 +107,7 @@
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/statemanagement/durability/CSTState.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/com/example/csd/CsdApplication.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/statemanagement/durability/StateSender.java
+/home/ruben/Downloads/OA3/REST_API/src/main/java/com/example/csd/BlockChain/JavaBlock.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/tom/util/RSAKeyPairGenerator.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/tom/RequestContext.java
 /home/ruben/Downloads/OA3/REST_API/src/main/java/bftsmart/tom/server/durability/DurabilityCoordinator.java

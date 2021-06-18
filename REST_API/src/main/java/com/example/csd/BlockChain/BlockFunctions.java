@@ -17,7 +17,7 @@ public class BlockFunctions {
             for(int i=0;i<nTransactions;i++){
                 byte[] raw =rewards.get(i).CoinBaseBlock();
                 os.write(raw);
-                CoinBase.recoverBaseCoinRaw(raw);
+                //SCoinBase.recoverBaseCoinRaw(raw);
             }
             os.write(utils.intToByteArray(0));
         }else{

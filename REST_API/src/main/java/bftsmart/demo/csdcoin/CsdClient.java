@@ -184,11 +184,11 @@ public class CsdClient {
         return null;
     }
 
-    public byte[] mineBlock(byte[] minedBlock){
+    public byte[] mineBlock(byte[] minedBlock,String username){
         try (ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
              ObjectOutput objOut = new ObjectOutputStream(byteOut);) {
 
-            Message msg = Message.mine(minedBlock);
+            Message msg = Message.mine(minedBlock,username);
             objOut.writeObject(msg);
             objOut.flush();
             byteOut.flush();

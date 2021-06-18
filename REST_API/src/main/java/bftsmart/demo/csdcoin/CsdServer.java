@@ -20,9 +20,11 @@ import com.example.csd.Account.AccountRepository;
 import com.example.csd.BlockChain.Block;
 import com.example.csd.BlockChain.BlockFunctions;
 import com.example.csd.BlockChain.ChainRepository;
+import com.example.csd.BlockChain.JavaBlock;
 import com.example.csd.CoinBase.CoinBase;
 import com.example.csd.CoinBase.CoinBaseRepository;
 import com.example.csd.Transfer.TokenTransfer;
+import com.example.csd.Transfer.TokenTransferSimple;
 import com.example.csd.Transfer.TransferRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -105,39 +107,27 @@ public class CsdServer extends DefaultSingleRecoverable {
 		new CsdServer(Integer.parseInt(args[0]));
 	}
 */
-	private byte[]getPreviousHash(byte[] block){
-		byte[] previousHash= new byte[32];
-		System.arraycopy(block,40,previousHash,0,32);
-		return previousHash;
-	}
 
-	private byte[] getTransactionHash(byte[] block){
-		byte[] hash= new byte[32];
-		System.arraycopy(block,8,hash,0,32);
-		return hash;
-	}
-	private byte[]getBlockHash(byte[] block){
-		byte[] blockHash= new byte[32];
-		System.arraycopy(block,72,blockHash,0,32);
-		return blockHash;
-	}
 
 	private boolean veryfyMined(byte[] block) throws NoSuchAlgorithmException, IOException {
-		//MessageDigest md = MessageDigest.getInstance("SHA-256");
+		JavaBlock jBlock = new JavaBlock(block);
 		int ExpectingId;
 		byte[] previousBlock;
+		byte[] finalHash = jBlock.finalHash;
+		if(finalHash[0] !=0 || finalHash[1] !=0 || finalHash[2] !=0 ){
+			return false;
+		}
 		if(chainRepository.findLast()!=null){
 			ExpectingId=chainRepository.findLast()+1;
 			previousBlock=chainRepository.findDistinctById(ExpectingId-1).getBlock();
-			byte[] realPrevious=getBlockHash(previousBlock);
-			byte[] newBlockPreviousHash = getPreviousHash(block);
-			if(!MessageDigest.isEqual(realPrevious,newBlockPreviousHash)){
+			JavaBlock previousJBlock = new JavaBlock(previousBlock);
+			if(!MessageDigest.isEqual(jBlock.previousHash,previousJBlock.finalHash)){
 				System.out.println("Falha na verificação dos hashes das anteriores");
 				return false;
 			}
 		}else{
 			ExpectingId=0;
-			byte[] newBlockPreviousHash = getPreviousHash(block);
+			byte[] newBlockPreviousHash = jBlock.previousHash;
 			for(int i=0;i<32;i++){
 				if(newBlockPreviousHash[i]!=0){
 					System.out.println("Falha na verificação dos hashes das anteriores");
@@ -152,49 +142,36 @@ public class CsdServer extends DefaultSingleRecoverable {
 			return false;
 		}
 
-		if(!verifyTransactions_and_finalHash(block)){
+		if(!verifyTransactions_and_finalHash(jBlock)){
 			return false;
 		}
 		return true;
 	}
 
-	private List<CoinBase> getCoinBases(byte[] block){
-		List<CoinBase> lCb = new ArrayList<CoinBase>();
-		byte[] numberCoinBase = new byte[4];
-		System.arraycopy(block,104,numberCoinBase,0,4);
-		int nCoinBases = utils.byteArrayToint(numberCoinBase);
 
-		int bytesConsumed=108;
-		for(int i=0;i<nCoinBases;i++){
-			byte[] aux = new byte[4];
-			System.arraycopy(block,bytesConsumed,aux,0,4);
-			int id = utils.byteArrayToint(aux);
-			System.arraycopy(block,bytesConsumed+4,aux,0,4);
-			int nCarachters= utils.byteArrayToint(aux);
-			byte[] username= new byte[nCarachters];
-			System.arraycopy(block,bytesConsumed+8,username,0,nCarachters);
-			String name = new String(username,StandardCharsets.ISO_8859_1);
-			System.arraycopy(block,bytesConsumed+8+nCarachters,aux,0,4);
-			int amount = utils.byteArrayToint(aux);
-			System.out.println(id+name+amount);
-			bytesConsumed+=(12+nCarachters);
-			CoinBase cb = new CoinBase(id,name,amount);
-			lCb.add(cb);
-		}
-		return lCb;
-	}
-	private boolean verifyCoinTransferHashes(List<CoinBase> lCb,List<TokenTransfer> lTt,byte[] block) throws IOException, NoSuchAlgorithmException {
-		byte[] bTransactionHashes = getTransactionHash(block);
+	private boolean verifyCoinTransferHashes(List<CoinBase> lCb, List<TokenTransferSimple> lTt, JavaBlock block) throws IOException, NoSuchAlgorithmException {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		if(lCb.size()+lTt.size()>50){
+			System.out.println("Falha na verificação excedeu as transferencias");
+			return false;
+		}
 		os.write(utils.intToByteArray(lCb.size()));
 		for(CoinBase cb : lCb){
 			os.write(cb.CoinBaseBlock());
 		}
-		os.write(utils.intToByteArray(0));
+		os.write(utils.intToByteArray(lTt.size()));
+		for(TokenTransferSimple tT : lTt){
+			os.write(tT.TransferBlock());
+		}
+		byte[] data =new byte[block.rawBlock.length-(104)];
+		System.arraycopy(block.rawBlock,104,data,0,block.rawBlock.length-(104));
 		byte[] hashesToCalculate= os.toByteArray();
 		MessageDigest md = MessageDigest.getInstance("SHA-256");
 		byte[] hashed = md.digest(hashesToCalculate);
-		if(MessageDigest.isEqual(hashed,bTransactionHashes)){
+		if(MessageDigest.isEqual(data,hashesToCalculate)){
+			System.out.println("Ambos sao iguais");
+		}
+		if(MessageDigest.isEqual(hashed,block.dataHash)){
 			return true;
 		}else{
 			System.out.println("Falha na verificação dos hashes das transferencias");
@@ -202,25 +179,57 @@ public class CsdServer extends DefaultSingleRecoverable {
 		}
 	}
 
-	private boolean verifyHeaderHash(byte[] block) throws NoSuchAlgorithmException {
+	private boolean verifyHeaderHash(JavaBlock block) throws NoSuchAlgorithmException {
 	    MessageDigest md = MessageDigest.getInstance("SHA-256");
 	    byte[] header = new byte[72];
-	    byte[] blockHash = new byte[32];
-        System.arraycopy(block,0,header,0,72);
-	    System.arraycopy(block,72,blockHash,0,32);
+        System.arraycopy(block.rawBlock,0,header,0,72);
 	    byte[] headerHashed = md.digest(header);
-	    if(MessageDigest.isEqual(blockHash,headerHashed)){
+	    if(MessageDigest.isEqual(block.finalHash,headerHashed)){
 	        return true;
         }else{
 	        return false;
         }
     }
 
+	private boolean confirmTransactions(List<TokenTransferSimple> lTt,int blockId){
+		List<TokenTransfer> listToUpdate = new ArrayList<TokenTransfer>();
+		for(TokenTransferSimple tT :lTt ){
+			Optional<TokenTransfer> optional =transferRepository.findById(tT.getId());
+			if(optional.get()==null){
+				return false;
+			}
+
+			TokenTransfer tTb = optional.get();
+			if(utils.byteArrayToint(tT.getAmount())!=utils.byteArrayToint(tTb.getAmount())){
+				return false;
+			}
+			if(!tT.getFrom().equals(tTb.getFrom().getUsername())){
+			    return false;
+            }
+			if(!tT.getTo().equals(tTb.getTo().getUsername())){
+			    return false;
+            }
+			if(tT.getSignature().equals(tTb.getSignature())){
+			    return false;
+            }
+			if(tT.getId()==tTb.getId() && tTb.getBlockId()==-1){
+				tTb.setBlockId(blockId);
+				listToUpdate.add(tTb);
+			}else{
+				return false;
+			}
+		}
+		for(TokenTransfer toUpdate: listToUpdate){
+			transferRepository.addConfirmation(toUpdate.getId(), toUpdate.getBlockId());
+		}
+		//coinRepository.saveAll(listToUpdate);
+		return true;
+	}
+
+
+
     private boolean confirmCoinBase(List<CoinBase> lBc,int blockId){
 	    List<CoinBase> listToUpdate = new ArrayList<CoinBase>();
-	    if(lBc.size()<=0){
-	    	return false;
-		}
         for(CoinBase cb :lBc ){
             Optional<CoinBase> optional =coinRepository.findById(cb.getId());
             if(optional.get()==null){
@@ -241,25 +250,43 @@ public class CsdServer extends DefaultSingleRecoverable {
         return true;
     }
 
-	private boolean verifyTransactions_and_finalHash(byte[] block) throws IOException, NoSuchAlgorithmException {
-		List<CoinBase> lCb = getCoinBases(block);
+	private boolean verifyTransactions_and_finalHash(JavaBlock block) throws IOException, NoSuchAlgorithmException {
+		List<CoinBase> lCb = block.coinBase;
+		List<TokenTransferSimple> lTt = block.transactions;
 		//VerificarHash de transaçoes
 		//fazer transações
-		List<TokenTransfer> lTt = null;
 		if(!verifyCoinTransferHashes(lCb,lTt,block)){
 			return false;
 		}
 		if(!verifyHeaderHash(block)){
 		    return false;
         }
-		byte[] blockId = new byte[4];
-		System.arraycopy(block,0,blockId,0,4);
-        if(!confirmCoinBase(lCb,utils.byteArrayToint(blockId))){
+        if(!confirmCoinBase(lCb,block.id)){
             return false;
         }
+        if(!confirmTransactions(lTt,block.id)){
+			return false;
+		}
+
 		return true;
 	}
 
+	private void  reward(int nTransactions, String user) throws NoSuchAlgorithmException, IOException {
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		 if(coinRepository.findLast() != null) {
+			CoinBase cb = new CoinBase(coinRepository.findLast()+1,user,nTransactions*20);
+			byte[] cbRaw = cb.CoinBaseBlock();
+			byte[] operationHash = md.digest(cbRaw);
+			cb.setOperationHash(operationHash);
+			coinRepository.save(cb);
+		}else{
+			 CoinBase cb = new CoinBase(0,user,nTransactions*20);
+			 byte[] cbRaw = cb.CoinBaseBlock();
+			 byte[] operationHash = md.digest(cbRaw);
+			 cb.setOperationHash(operationHash);
+			 coinRepository.save(cb);
+		 }
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -278,6 +305,7 @@ public class CsdServer extends DefaultSingleRecoverable {
 			switch (message.getKey()) {
 				case "MINE":
 					byte[] MinedBlock=message.getValues().get("BLOCK");
+					String minedUser= new String(message.getValues().get("USERNAME"),StandardCharsets.UTF_8);
 					boolean done =veryfyMined(MinedBlock);
 					results = new ArrayList<byte[]>();
 					if(done){
@@ -286,6 +314,8 @@ public class CsdServer extends DefaultSingleRecoverable {
 						Block blck = new Block(utils.byteArrayToint(bId),MinedBlock);
 						chainRepository.save(blck);
 						byte[] hash =md.digest(blck.getBlock());
+						JavaBlock aux = new JavaBlock(MinedBlock);
+						reward(aux.coinBase.size()+aux.transactions.size(),minedUser);
 						results.add("CONGRATS YOU DID IT".getBytes(StandardCharsets.UTF_8));
 						results.add(hash);
 					}else{
@@ -536,6 +566,15 @@ public class CsdServer extends DefaultSingleRecoverable {
 		for(CoinBase cb : cbUtxo){
 			balance+=cb.getAmount();
 		}
+		List<TokenTransfer> received = transferRepository.findConfirmedReceived(username);
+		for(TokenTransfer tt : received){
+			balance+=utils.byteArrayToint(tt.getAmount());
+		}
+		List<TokenTransfer> send = transferRepository.findConfirmedPaid(username);
+		for(TokenTransfer tt : send){
+			balance-=utils.byteArrayToint(tt.getAmount());
+		}
+
 
 		return balance;
 	}
@@ -657,9 +696,9 @@ public class CsdServer extends DefaultSingleRecoverable {
 					}
 					for(TokenTransfer tr : auxlist){
 						if(tr.getFrom().getUsername().equals(tr.getTo().getUsername())){
-							results.add(("Deposit on: "+tr.getFrom().getUsername()+" with a amount of: "+tr.getAmount()).getBytes(StandardCharsets.UTF_8));
+							results.add(("Deposit on: "+tr.getFrom().getUsername()+" with a amount of: "+utils.byteArrayToint(tr.getAmount())).getBytes(StandardCharsets.UTF_8));
 						}else{
-							results.add(("Transfer from: "+tr.getFrom().getUsername()+" to: "+tr.getTo().getUsername()+" with a amount of: "+tr.getAmount()).getBytes(StandardCharsets.UTF_8));
+							results.add(("Transfer from: "+tr.getFrom().getUsername()+" to: "+tr.getTo().getUsername()+" with a amount of: "+utils.byteArrayToint(tr.getAmount())).getBytes(StandardCharsets.UTF_8));
 						}
 					}
 					response = Message.results(results);
@@ -675,13 +714,13 @@ public class CsdServer extends DefaultSingleRecoverable {
 						Timestamp et = new Timestamp(end);
 						auxlist1 = (List<TokenTransfer>) transferRepository.findAllByTimestamp(st,et);
 					}else{
-						auxlist1 = (List<TokenTransfer>) transferRepository.findAll();
+						auxlist1 = (List<TokenTransfer>) transferRepository.findConfirmed();
 					}
 					for(TokenTransfer tr : auxlist1){
 						if(tr.getFrom().getUsername().equals(tr.getTo().getUsername())){
-							results.add(("Deposit on: "+tr.getFrom().getUsername()+" with a amount of: "+tr.getAmount()).getBytes(StandardCharsets.UTF_8));
+							results.add(("Deposit on: "+tr.getFrom().getUsername()+" with a amount of: "+utils.byteArrayToint(tr.getAmount())).getBytes(StandardCharsets.UTF_8));
 						}else{
-							results.add(("Transfer from: "+tr.getFrom().getUsername()+" to: "+tr.getTo().getUsername()+" with a amount of: "+tr.getAmount()).getBytes(StandardCharsets.UTF_8));
+							results.add(("Transfer from: "+tr.getFrom().getUsername()+" to: "+tr.getTo().getUsername()+" with a amount of: "+utils.byteArrayToint(tr.getAmount())).getBytes(StandardCharsets.UTF_8));
 						}
 					}
 					response = Message.results(results);
@@ -721,13 +760,15 @@ public class CsdServer extends DefaultSingleRecoverable {
 			try{
 				List<Account> accounts= (List<Account>) repositorydb.findAll();
 				List<TokenTransfer> transfers = (List<TokenTransfer>) transferRepository.findAll();
+				List<Block> chain = (List<Block>) chainRepository.findAll();
+				List<CoinBase> coins = (List<CoinBase>) coinRepository.findAll();
 				//System.out.println(accounts.get(0).getUsername());
-				Repository backup = new Repository(accounts,transfers);
+				Repository backup = new Repository(accounts,transfers,chain,coins);
 				objOut.writeObject(backup);
 				return byteOut.toByteArray();
 			}catch (NullPointerException e){}
 			System.out.println("falhou respositorio");
-			Repository backup = new Repository(new ArrayList<Account>(),new ArrayList<TokenTransfer>());
+			Repository backup = new Repository(new ArrayList<Account>(),new ArrayList<TokenTransfer>(),new ArrayList<Block>(),new ArrayList<CoinBase>());
 			objOut.writeObject(backup);
 			return byteOut.toByteArray();
 		} catch (IOException e) {
@@ -745,6 +786,8 @@ public class CsdServer extends DefaultSingleRecoverable {
 			Repository repository = (Repository) objIn.readObject();
 			repositorydb.saveAll(repository.getAccounts());
 			transferRepository.saveAll(repository.getTransfers());
+			chainRepository.saveAll(repository.getChain());
+			coinRepository.saveAll(repository.getCoinBases());
 		} catch (IOException | ClassNotFoundException e) {
 			logger.log(Level.SEVERE, "Error while installing snapshot", e);
 		}

@@ -41,6 +41,7 @@ public class Client {
     public static byte[] transactions=null;
     public static byte[] lastBlockHash=null;
     public static int lastBlockId=-1;
+    public static String urlp ="localhost:8443";
 
     public static X509Certificate generateCertificate(KeyPair keyPair,String username) throws CertificateEncodingException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException {
         X509V3CertificateGenerator cert = new X509V3CertificateGenerator();
@@ -126,7 +127,7 @@ public class Client {
             password = console.readLine("Enter the password: ").trim();
             PublicKey pk = PublickKey(username,password);
 
-            URL url1 = new URL("https://localhost:8443/users/new?username="+username+"&pwd="+password);//+"&publickey="+pk.getEncoded());
+            URL url1 = new URL("https://"+urlp+"/users/new?username="+username+"&pwd="+password);//+"&publickey="+pk.getEncoded());
             HttpsURLConnection con = (HttpsURLConnection) url1.openConnection();
             con.setSSLSocketFactory(sslContext.getSocketFactory());
             con.setRequestProperty("Accept", "application/json");
@@ -172,7 +173,7 @@ public class Client {
     
     public static void main(String[] args) throws Exception, KeyStoreException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException, KeyManagementException {
         String keyPassphrase = "changeit";
-
+        
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
         keyStore.load(new FileInputStream("keystore.p12"), keyPassphrase.toCharArray());
 
@@ -201,6 +202,8 @@ public class Client {
         entry aux =login(console,sslContext);
         username= aux.username;
         password= aux.password;
+        urlp ="localhost:8443";
+        urlp= args[0];
 
         while (!exit) {
             System.out.println();
@@ -211,7 +214,9 @@ public class Client {
             System.out.println("3 - Transfer");
             System.out.println("4 - User ledger");
             System.out.println("5 - ledger");
-            System.out.println("6 - Operation Hash");
+            System.out.println("7 - Get Pending Transactions");
+            System.out.println("8 - Get Last Block");
+            System.out.println("9 - Mine");
             System.out.println();
 
             int cmd = Integer.parseInt(console.readLine("Option:"));
@@ -219,7 +224,7 @@ public class Client {
                 case 1:
                     System.out.println("Getting Balance");
                     //String username = console.readLine("Enter the username: ").trim();
-                    URL url = new URL("https://localhost:8443/users/balance?username="+username);
+                    URL url = new URL("https://"+urlp+"/users/balance?username="+username);
                     HttpsURLConnection con1 = (HttpsURLConnection) url.openConnection();
                     con1.setSSLSocketFactory(sslContext.getSocketFactory());
                     con1.setRequestProperty("Accept", "application/json");
@@ -264,7 +269,7 @@ public class Client {
                     //String username2 = console.readLine("Enter username: ").trim();
                     //String pwd2 = console.readLine("Enter the password: ").trim();
                     int amount = Integer.parseInt(console.readLine("Enter amount: ").trim());
-                    URL url2 = new URL("https://localhost:8443/users/deposit?username="+username+"&amount="+amount);
+                    URL url2 = new URL("https://"+urlp+"/users/deposit?username="+username+"&amount="+amount);
                     HttpsURLConnection con2 = (HttpsURLConnection) url2.openConnection();
                     con2.setSSLSocketFactory(sslContext.getSocketFactory());
                     con2.setRequestProperty("Content-Type", "text/plain");
@@ -295,7 +300,7 @@ public class Client {
                     String to = console.readLine("To: ").trim();
                     float amount2 = Float.parseFloat(console.readLine("Enter amount: ").trim());
                     //String pwd3 = console.readLine("pwd: ").trim();
-                    URL url3 = new URL("https://localhost:8443/transfer/csdcoin?from="+username+"&to="+to+"&amount="+amount2);
+                    URL url3 = new URL("https://"+urlp+"/transfer/csdcoin?from="+username+"&to="+to+"&amount="+amount2);
                     HttpsURLConnection con3 = (HttpsURLConnection) url3.openConnection();
                     con3.setSSLSocketFactory(sslContext.getSocketFactory());
                     con3.setRequestProperty("Content-Type", "text/plain");
@@ -333,7 +338,7 @@ public class Client {
                         ett =df.parse(end).getTime();
                     }
 
-                    URL url4 = new URL("https://localhost:8443/transfer/ledger?username="+username3+"&start="+stt+"&end="+ett);
+                    URL url4 = new URL("https://"+urlp+"/transfer/ledger?username="+username3+"&start="+stt+"&end="+ett);
                     HttpsURLConnection con4 = (HttpsURLConnection) url4.openConnection();
                     con4.setSSLSocketFactory(sslContext.getSocketFactory());
                     con4.setRequestMethod("GET");
@@ -356,7 +361,7 @@ public class Client {
                         stt1=df.parse(start1).getTime();
                         ett1 =df.parse(end1).getTime();
                     }
-                    URL url5 = new URL("https://localhost:8443/transfer/ledger?start="+stt1+"&end="+ett1);
+                    URL url5 = new URL("https://"+urlp+"/transfer/ledger?start="+stt1+"&end="+ett1);
                     HttpsURLConnection con5 = (HttpsURLConnection) url5.openConnection();
                     con5.setSSLSocketFactory(sslContext.getSocketFactory());
                     con5.setRequestMethod("GET");
@@ -370,7 +375,7 @@ public class Client {
                 case 6:
                     System.out.println("Getting operation Hash : ");
                     int opId = Integer.parseInt(console.readLine("Enter operation ID: ").trim());
-                    URL url6 = new URL("https://localhost:8443/users/hash?id="+opId);
+                    URL url6 = new URL("https://"+urlp+"/users/hash?id="+opId);
                     HttpsURLConnection con6 = (HttpsURLConnection) url6.openConnection();
                     con6.setSSLSocketFactory(sslContext.getSocketFactory());
                     con6.setRequestMethod("GET");
@@ -383,7 +388,7 @@ public class Client {
                     break;
                 case 7:
                    int number = Integer.parseInt(console.readLine("Number of Blocks: ").trim());
-                    URL url7 = new URL("https://localhost:8443/transfer/pending?nTransactions="+number);
+                    URL url7 = new URL("https://"+urlp+"/transfer/pending?nTransactions="+number);
                     HttpsURLConnection con7 = (HttpsURLConnection) url7.openConnection();
                     con7.setSSLSocketFactory(sslContext.getSocketFactory());
                     con7.setRequestMethod("GET");
@@ -399,7 +404,7 @@ public class Client {
        		pending(os.toByteArray());
                     break;
                case 8:
-                    URL url8 = new URL("https://localhost:8443/transfer/LastBlock");
+                    URL url8 = new URL("https://"+urlp+"/transfer/LastBlock");
                     HttpsURLConnection con8 = (HttpsURLConnection) url8.openConnection();
                     con8.setSSLSocketFactory(sslContext.getSocketFactory());
                     con8.setRequestMethod("GET");
@@ -425,7 +430,7 @@ public class Client {
     			}
                     	
                     	
-                    	 URL url9 = new URL("https://localhost:8443/transfer/mine?username="+username);
+                    	 URL url9 = new URL("https://"+urlp+"/transfer/mine?username="+username);
                     HttpsURLConnection con9 = (HttpsURLConnection) url9.openConnection();
                     con9.setSSLSocketFactory(sslContext.getSocketFactory());
                     con9.setRequestProperty("Content-Type", "text/plain");
@@ -481,7 +486,7 @@ public class Client {
     	System.out.println(pending.length);
     	System.arraycopy(pending,0,nCoinbase,0,4);
     	int nCoinBases = byteArrayToint(nCoinbase);
-
+/*
 	int bytesConsumed=4;
 	for(int i=0;i<nCoinBases;i++){
 		byte[] aux = new byte[4];
@@ -530,10 +535,11 @@ public class Client {
 	    	bytesConsumed+=(17+nCarachtersFrom+nCarachtersTo+128);
 	}
 	
-	
+	*/
 	
     	transactions=pending;
-    	System.out.println(transactions);
+    	System.out.println(transactions.length);
+    	//System.out.println(bytesConsumed);
     	
     }
      public static byte[] mine(int lastBlockId )throws Exception{

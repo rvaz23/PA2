@@ -86,12 +86,13 @@ public class Message implements Serializable {
         return message;
     }
 
-    public static Message mine(byte[] block){
+    public static Message mine(byte[] block,String username){
         Message message = new Message();
         message.type = Type.GET;
         message.key = "MINE";
         HashMap<String,byte[]> n = new HashMap<String,byte[]>();
         n.put("BLOCK", block);
+        n.put("USERNAME", username.getBytes(StandardCharsets.UTF_8));
         message.values = n;
         return message;
     }
