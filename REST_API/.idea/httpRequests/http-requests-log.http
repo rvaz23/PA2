@@ -1,0 +1,258 @@
+POST https://localhost:8443/transfer/mine?username=123
+
+<> 2021-06-17T190054.200.txt
+
+###
+
+POST https://localhost:8443/transfer/mine?username=123
+
+<> 2021-06-17T185914.400.json
+
+###
+
+POST https://localhost:8443/transfer/mine?username=123
+
+<> 2021-06-17T185817.400.json
+
+###
+
+POST https://localhost:8443/transfer/mine?username=123
+
+<> 2021-06-17T185733.400.json
+
+###
+
+POST https://localhost:8443/users/new
+
+###
+
+POST https://localhost:8443/users/new
+
+###
+
+POST https://localhost:8443/users/new
+
+###
+
+POST https://localhost:8080/users/new
+
+###
+
+POST https://localhost:8080/users/new
+
+###
+
+POST http://localhost:8080/users/new
+
+###
+
+GET https://localhost:8080/users/new?username=Ruben
+
+<> 2021-04-24T195355.405.json
+
+###
+
+GET https://localhost:8082/users/new?username=Ruben
+
+<> 2021-04-24T195308.405.json
+
+###
+
+GET https://localhost:8083/users/new?username=Ruben
+
+###
+
+GET https://localhost:8083/users/balance?username=Ruben
+
+###
+
+POST https://localhost:8443/users/deposit?username=99&amount=10
+
+<> 2021-04-19T155039.200.txt
+
+###
+
+POST https://localhost:8443/users/deposit?username=99&amount=10.0
+
+<> 2021-04-19T155035.400.json
+
+###
+
+POST https://localhost:8443/users/deposit?username=99&amount=10
+
+<> 2021-04-19T155024.200.txt
+
+###
+
+POST https://localhost:8443/users/new
+Content-Type: application/x-www-form-urlencoded
+
+username=99&&pwd=new-element
+
+<> 2021-04-19T155011.200.txt
+
+###
+
+POST https://localhost:8443/users/deposit?username=ruben&amount=10
+<> 2021-04-19T154756.400.json:
+
+<> 2021-04-19T154915.400.html
+
+###
+
+POST https://localhost:8443/users/deposit?username=99&amount=10
+
+<> 2021-04-19T154833.200.txt
+
+###
+
+POST https://localhost:8443/users/deposit?username=99&amount=10
+
+<> 2021-04-19T154827.200.txt
+
+###
+
+POST https://localhost:8443/users/deposit?username=ruben&amount=10.0
+
+<> 2021-04-19T154756.400.json
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+<> 2021-04-19T152057.200.txt
+
+###
+
+GET https://localhost:8443/users/all
+
+<> 2021-04-19T145205.200.json
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+<> 2021-04-19T144849.200.txt
+
+###
+
+GET https://localhost:8443/users/all
+
+<> 2021-04-19T144831.200.json
+
+###
+
+POST https://localhost:8443/users/deposit?username=99&amount=10
+
+<> 2021-04-19T144802.200.txt
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+<> 2021-04-19T144520.200.txt
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+<> 2021-04-19T144505.200.txt
+
+###
+
+POST https://localhost:8443/users/new
+Content-Type: application/x-www-form-urlencoded
+
+username=10
+
+<> 2021-04-19T144456.400.json
+
+###
+
+POST https://localhost:8443/users/new?username=10&pwd=new-element
+
+<> 2021-04-19T140015.200.txt
+
+###
+
+POST https://localhost:8443/users/new
+Content-Type: application/x-www-form-urlencoded
+
+username=99&&pwd=new-element
+
+<> 2021-04-19T135905.200.txt
+
+###
+

@@ -1,0 +1,7 @@
+{
+  "timestamp": "2021-04-19T14:47:56.311+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "",
+  "path": "/users/deposit"
+}

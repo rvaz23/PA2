@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "username": "10",
+    "pwd": "new-element",
+    "amount": 0.0
+  },
+  {
+    "id": 2,
+    "username": "qwe",
+    "pwd": "1323",
+    "amount": 0.0
+  },
+  {
+    "id": 3,
+    "username": "dsa",
+    "pwd": "321",
+    "amount": 0.0
+  }
+]

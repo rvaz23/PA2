@@ -1,0 +1,92 @@
+package bftsmart.demo.csdcoin;
+
+
+
+import java.io.Console;
+import java.util.List;
+import java.util.Set;
+
+public class InteractiveClient {
+    public static void main(String[] args) {
+
+        int clientId = Integer.parseInt(args[0]);
+        CsdClient client = new CsdClient(clientId);
+        Console console = System.console();
+
+
+        boolean exit = false;
+        String key, value, result;
+        Message msg;
+        while(!exit) {
+            System.out.println("Select an option:");
+            System.out.println("0 - Terminate this client");
+            System.out.println("1 - Insert user");
+            System.out.println("2 - Deposit");
+            System.out.println("3 - Transfer");
+            System.out.println("4 - User ledger");
+            System.out.println("5 - ledger");
+
+            int cmd = Integer.parseInt(console.readLine("Option:"));
+
+            switch (cmd) {
+                case 0:
+                    client.close();
+                    exit = true;
+                    break;
+                case 1:
+                    System.out.println("New user");
+                    String username = console.readLine("Enter the username: ").trim();
+                    String pwd = console.readLine("Enter the pwd: ").trim();
+                   // result =  client.addUser(username);
+                    //System.out.println("Previous value: " + result);
+                    break;
+                case 2:
+                    System.out.println("Deposit ");
+                    String username1 = console.readLine("Enter username: ").trim();
+                    float amount = Float.parseFloat(console.readLine("Enter amount: ").trim());
+                    byte[] error = new byte[0];
+                    List<String> depositResponse =  client.deposit(username1,amount,error);
+                    for (String depositr : depositResponse){
+                        System.out.println("-> "+depositr);
+                    }
+                    break;
+                case 3:
+                    System.out.println("Transfer");
+                    String from = console.readLine("From: ").trim();
+                    String to = console.readLine("To: ").trim();
+                    float amount2 = Float.parseFloat(console.readLine("Enter amount: ").trim());
+                    byte[] error1 = new byte[0];
+                    for(String str:client.transfer(from,to,amount2,error1)){
+                        System.out.println(str);
+                    }
+
+                    break;
+                case 4:
+                    System.out.println("Getting user transactions: ");
+                    String username2 = console.readLine("Enter Username: ").trim();
+                    List<String> list = client.userLedger(username2);
+                    for (String trans: list){
+                        System.out.println("-> "+trans);
+                    }
+                    break;
+                case 5:
+                    System.out.println("Getting all transactions");
+                    List<String> list1 = client.globalLedger();
+                    for (String trans: list1){
+                        System.out.println("-> "+trans);
+                    }
+                    break;
+                case 6:
+                    System.out.println("Getting all Accounts");
+                    List<String> list2 = client.listUsers();
+                    for (String users: list2){
+                        System.out.println("-> "+users);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+    }
+}
