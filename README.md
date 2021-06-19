@@ -2,12 +2,18 @@
 -instalar maven, spring,mysql, java 1.8 com bouncyCastle
 -!!!! Nova release do java1.8-u291 pode ter conflito com acesso a keystore, solução utilizada foi por o bouncyCastle como o primeiro CriptoProvider
 Utilizei base de dados relacional mysql:
+
   -criar utilizador csd2021
   -password csd2021
   criar as tabelas para as replicas o nome por default é csd2021, mas pode ser passado como argumento a tabela
   
   
 # Docker 
+
+
+https://drive.google.com/drive/folders/1bcEz2FfFzYC4CVLMQif2Vo04MlWIZOPC?usp=sharing
+
+
 	-docker run -it "image"
 	
 	Para cada servidor 
